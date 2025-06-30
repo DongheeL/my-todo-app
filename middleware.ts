@@ -5,8 +5,20 @@ import { getToken } from "next-auth/jwt";
 // 토큰 검증 캐싱을 위한 Map (간단한 메모리 캐시)
 const tokenCache = new Map();
 
+// 환경에 따른 세션 쿠키 이름 결정
+const getSessionCookieName = (req: NextRequest): string => {
+  // Vercel 프로덕션 환경에서는 secure 쿠키 사용
+  const isSecure =
+    req.headers.get("x-forwarded-proto") === "https" ||
+    process.env.NODE_ENV === "production";
+  return isSecure
+    ? "__Secure-next-auth.session-token"
+    : "next-auth.session-token";
+};
+
 export async function middleware(request: NextRequest) {
-  const sessionId = request.cookies.get("next-auth.session-token")?.value;
+  const cookieName = getSessionCookieName(request);
+  const sessionId = request.cookies.get(cookieName)?.value;
 
   // 캐시된 토큰이 있는지 확인
   let token;
@@ -19,7 +31,7 @@ export async function middleware(request: NextRequest) {
       secret: process.env.NEXTAUTH_SECRET,
     });
 
-    // 토큰이 있으면 캐시에 저장 (5분간 유효)
+    // 토큰이 있으면 캐시에 저장 (1시간간 유효)
     if (sessionId && token) {
       tokenCache.set(sessionId, token);
       setTimeout(() => tokenCache.delete(sessionId), 60 * 60 * 1000);

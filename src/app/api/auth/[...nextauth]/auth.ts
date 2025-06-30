@@ -17,4 +17,11 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
+  // Vercel 배포 환경에서 URL 설정
+  ...(process.env.VERCEL_URL || process.env.NEXTAUTH_URL
+    ? {
+        trustHost: true,
+        url: process.env.NEXTAUTH_URL || process.env.VERCEL_URL,
+      }
+    : {}),
 };
