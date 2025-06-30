@@ -71,7 +71,7 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 flex flex-col items-center justify-center py-10 px-2">
-      <Suspense fallback={<Loading />}>
+      <Suspense>
         <LoginContent />
       </Suspense>
     </div>
