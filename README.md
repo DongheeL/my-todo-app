@@ -1,63 +1,49 @@
 ﻿# My Todo App
 
-Next.js로 개발된 할 일 관리 애플리케이션입니다. Google과 Kakao 소셜 로그인을 통해 개인화된 할 일 목록을 관리할 수 있습니다.
+간단한 할 일 관리 앱입니다.  
+Next.js 기반으로 만들었고, Google 계정으로 로그인해서 개인화된 To-do 목록을 관리할 수 있습니다.
 
 ## 주요 기능
 
-- 📝 **할 일 관리**: 할 일을 추가, 삭제, 완료 처리할 수 있습니다.
-- 🔐 **소셜 로그인**: Google 및 Kakao 계정으로 간편하게 로그인 가능합니다.
-- 🌐 **반응형 디자인**: 모바일부터 데스크톱까지 모든 화면 크기에 최적화되었습니다.
-- ⚡ **빠른 반응성**: 낙관적 UI 업데이트로 사용자 경험을 향상시켰습니다.
+- ✅ 할 일 추가 / 삭제 / 완료 처리
+- 🔐 Google 소셜 로그인
+- 📱 모바일 대응 (반응형 UI)
+- ⚡ 빠른 렌더링과 부드러운 사용자 경험
 
-## 기술 스택
+## 사용 기술
 
-- **프론트엔드**: Next.js, React, TypeScript, TailwindCSS
-- **백엔드**: Next.js API Routes, Prisma
-- **인증**: NextAuth.js (Google, Kakao OAuth)
-- **데이터베이스**: 자체 데이터베이스 (Prisma 사용)
+- **Frontend**: Next.js 14, React, TypeScript, TailwindCSS  
+- **Backend**: Next.js API Routes, Prisma  
+- **인증**: NextAuth.js (Google OAuth)  
+- **DB**: Prisma + Neon (PostgreSQL)
 
-## 구조적 특징
+## 프로젝트 특징
 
-이 프로젝트는 Next.js의 App Router와 React Server Components를 사용하여 최적화된 웹 애플리케이션을 구현했습니다.
+- **서버/클라이언트 컴포넌트 분리**  
+  서버 컴포넌트로 SEO 처리 및 초기 렌더링, 클라이언트 컴포넌트는 동적인 기능만 담당합니다.
 
-- **서버 컴포넌트**: 정적 요소 및 SEO를 위한 메타데이터 처리
-- **클라이언트 컴포넌트**: 사용자 상호작용이 필요한 부분만 최소화
-- **미들웨어**: 인증 상태에 따른 라우팅 보호
+- **NextAuth 미들웨어 활용**  
+  로그인 여부에 따라 라우팅을 제어합니다.
 
-## Vercel 배포 설정 가이드
+- **간결한 UI & 빠른 인터랙션**  
+  최소한의 구성으로 할 일을 빠르게 관리할 수 있게 했습니다.
 
-이 애플리케이션은 Vercel에 배포되어 있으며, 배포 URL은 다음과 같습니다:
-https://my-todo-app-gkcx.vercel.app/
+## 배포
+
+Vercel로 배포했습니다.  
+👉 [https://my-todo-app-gkcx.vercel.app](https://my-todo-app-gkcx.vercel.app)
 
 ### Vercel 환경 변수 설정
 
-Vercel 대시보드에서 다음 환경 변수를 설정해야 합니다:
-
-1. **필수 환경 변수**:
+아래 환경 변수를 프로젝트 설정에 추가해야 합니다:
 
    - `NEXTAUTH_SECRET`: 인증에 사용되는 비밀 키 (안전한 랜덤 문자열)
    - `NEXTAUTH_URL`: 배포 URL (예: `https://my-todo-app-gkcx.vercel.app`)
    - `DATABASE_URL`: 데이터베이스 연결 문자열
    - `GOOGLE_CLIENT_ID`: Google OAuth 클라이언트 ID
    - `GOOGLE_CLIENT_SECRET`: Google OAuth 클라이언트 시크릿
-
-2. **OAuth 리디렉션 URL 설정**:
-
    - Google Cloud Console에서 리디렉션 URI 추가:
      `https://my-todo-app-gkcx.vercel.app/api/auth/callback/google`
-
-3. **Prisma 설정**:
-   Vercel 배포 시 Prisma가 올바르게 작동하도록 빌드 설정을 추가:
-   - Vercel 대시보드 > 프로젝트 > Settings > Build & Development Settings
-   - Build Command: `npx prisma generate && next build`
-
-### Vercel 배포 프로세스
-
-1. Vercel 계정에 GitHub 저장소 연결
-2. 필요한 환경 변수 설정
-3. 배포 설정 확인
-4. 배포 트리거 (자동 또는 수동)
-5. 배포 로그 확인하여 오류 해결
 
 ## 프로젝트 구조
 
@@ -120,26 +106,13 @@ model Todo {
 }
 ```
 
-## 인증 관련 주요 개선사항
+## 인증 관련 처리
 
-이 프로젝트는 다음과 같은 인증 관련 최적화를 포함합니다:
+- 로그인 시 로딩 UI로 사용자 흐름 방해 최소화
+- 로그아웃 시 즉시 화면 전환 + 세션 정리
+- 인증 미들웨어로 로그인 여부 체크 후 페이지 접근 제어
+- 인증 여부에 따라 UI 조건부 렌더링
 
-1. **로그인/로그아웃 최적화**
 
-   - 로그인 버튼 클릭 시 즉시 로딩 상태 표시
-   - 로그아웃 시 즉시 화면 전환 후 백그라운드에서 세션 종료 처리
-   - 로그인 진행 중 상태 관리 개선
 
-2. **컴포넌트 구조 개선**
 
-   - 서버 컴포넌트와 클라이언트 컴포넌트 분리
-   - 페이지는 서버 컴포넌트로, 상호작용 부분만 클라이언트 컴포넌트로 구현
-
-3. **레이아웃 시프트 방지**
-
-   - 로딩 상태에서도 일관된 UI 유지
-   - 로딩 중에는 비활성화된 상태로 UI 요소 표시
-
-4. **인증 흐름 최적화**
-   - 미들웨어를 통한 인증 상태 검증
-   - 세션 상태에 따른 조건부 렌더링 개선
