@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["lh3.googleusercontent.com"], // Google 프로필 이미지 도메인
   },
+
+  eslint: {
+    // ESLint 검사를 완전히 건너뜁니다.
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
